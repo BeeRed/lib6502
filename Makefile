@@ -19,7 +19,7 @@
 
 # last edited: 2013-06-08 01:08:02 by piumarta on vps2.piumarta.com
 
-CFLAGS = -g -O3
+CFLAGS = -ggdb -O3 -Wall
 
 PREFIX  = /usr/local
 BINDIR  = $(PREFIX)/bin
@@ -185,7 +185,7 @@ test4 : run6502 image .FORCE
 	echo 'P%=&2800:O%=P%:[opt3:ldx#65:.l txa:jsr&FFEE:inx:cpx#91:bnel:lda#13:jsr&FFEE:lda#10:jmp&FFEE:]:CALL&2800' | ./run6502 image
 
 test : run6502 lib1 image .FORCE
-	@$(MAKE) test1 test2 test3 test4 | grep -v '^make.* directory' | tee test.log
+	@$(MAKE) test1 test2 test3 test4 | grep -av '^make.* directory' | tee test.log
 	cmp test.log test.out
 	@echo
 	@echo SUCCESS
