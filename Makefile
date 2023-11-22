@@ -31,9 +31,10 @@ MANDIR  = $(PREFIX)/man
 MAN1DIR = $(MANDIR)/man1
 MAN3DIR = $(MANDIR)/man3
 
-all : run6502
+all : run6502 run6502-example
 
 run6502 : run6502.o lib6502.a
+run6502-example : run6502-example.o lib6502.a
 
 lib6502.a : lib6502.o
 	$(AR) -rc $@.new lib6502.o
@@ -41,7 +42,7 @@ lib6502.a : lib6502.o
 	-ranlib $@
 
 clean : .FORCE
-	rm -f run6502 lib1 *~ *.o *.a .gdb* *.img *.log
+	rm -f run6502 run6502-example lib1 *~ *.o *.a .gdb* *.img *.log
 
 .FORCE :
 
