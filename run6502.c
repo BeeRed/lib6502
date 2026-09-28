@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 #include <setjmp.h>
 
 #include "config.h"
@@ -89,7 +90,7 @@ int osword(M6502 *mpu, word address, byte data)
 	word  offset= params[0] + (params[1] << 8);
 	byte *buffer= mpu->memory + offset;
 	byte  length= params[2], minVal= params[3], maxVal= params[4], b= 0;
-	if (!fgets(buffer, length, stdin))
+	if (!fgets((char*)buffer, length, stdin))
 	  {
 	    putchar('\n');
 	    longjmp(exit_6502_env, 1);
@@ -171,12 +172,17 @@ int oscli(M6502 *mpu, word address, byte data)
 {
   byte *params= mpu->memory + mpu->registers->x + (mpu->registers->y << 8);
   char  command[1024], *ptr= command;
+  int ret;
   while (('*' == *params) || (' ' == *params))
     ++params;
   while (13 != *params)
     *ptr++= *params++;
   *ptr= '\0';
-  system(command);
+  ret = system(command);
+  if(-1 == ret) {
+      perror("ERR:system() failed");
+      exit(errno);
+  }
   rts;
 }
 
